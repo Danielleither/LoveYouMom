@@ -185,35 +185,29 @@
   <footer>with love ✦</footer>
 
   <script>
+   // ============================================================
+    //  ✏️  YOUR MEMORY DATA
+    //  Each block { } contains one photo, one message, and the name(s)
     // ============================================================
-    //  ✏️  YOUR PHOTOS — Direct links only
-    // ============================================================
-    const photos = [
-      "https://i.imgur.com/fGfJe5I.jpeg",
+    const memories = [
+      {
+        photo: "https://i.imgur.com/fGfJe5I.jpeg",
+        message: "Remembering that day in the corn maze! We had so much fun getting lost with you.",
+        from: "The Whole Crew"
+      },
+      {
+        photo: "https://imgur.com",
+        message: "This is my favorite photo of us from the holidays. You always make things so special.",
+        from: "Alex"
+      },
+      {
+        photo: "https://imgur.com",
+        message: "Thank you for always being there for me, from baby steps to now.",
+        from: "Sarah"
+      }
     ];
 
-    // ============================================================
-    //  ✏️  YOUR MESSAGES — Rotates daily
-    // ============================================================
-    const messages = [
-      "Every time I see this photo, I remember how lucky I am to have you. Thank you for everything, Mom.",
-      "This memory means the world to me. I love you more than words can say.",
-      "You've always been my greatest supporter. I hope you know how much that means.",
-      "Thank you for all the little moments that became the best memories.",
-      "No matter where life takes me, home will always be wherever you are.",
-      "You gave me the best childhood. I carry those memories with me every day.",
-      "I learned what kindness looks like by watching you. Thank you, Mom.",
-      "This photo makes me smile every single time. Just like you always do.",
-      "Some people are just irreplaceable — you are one of them.",
-      "I love you to the moon and back, and then some. Happy Mother's Day!",
-    ];
-
-    // ============================================================
-    //  ✏️  YOUR NAME — Change this to your name(s)
-    // ============================================================
-    const yourName = "Alex & Sarah"; 
-
-    // ---- Logic: pick photo based on day of year ----------------
+    // ---- Logic: pick memory based on day of year ----------------
     function getDayOfYear() {
       const now = new Date();
       const start = new Date(now.getFullYear(), 0, 0);
@@ -233,24 +227,25 @@
       });
     }
 
+    // Select today's memory
     const today = new Date();
-    const index = getDayOfYear() % photos.length;
+    const index = getDayOfYear() % memories.length;
+    const currentMemory = memories[index];
 
-    // Set message and customizable name
-    document.getElementById('daily-message').innerHTML =
-      (messages[index % messages.length] || "Thinking of you today, Mom. With all my love.") +
-      ` &mdash; <em>${yourName}</em>`;
+    // Set the specific Message and Name for this photo
+    document.getElementById('daily-message').innerHTML = 
+      currentMemory.message + ` &mdash; <em>${currentMemory.from}</em>`;
 
-    // Remove the Memory Label
+    // Hide the memory counter label
     document.getElementById('day-label').style.display = 'none';
 
-    // Set timestamp
+    // Set the live timestamp
     document.getElementById('timestamp').textContent =
       formatDate(today) + " · " + formatTime(today);
 
-    // Load photo
+    // Load the specific Photo
     const img = document.getElementById('daily-photo');
-    img.src = photos[index];
+    img.src = currentMemory.photo;
     img.onload = function () {
       this.classList.add('loaded');
       document.getElementById('fallback').style.display = 'none';
