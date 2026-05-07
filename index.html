@@ -170,7 +170,7 @@
     <div class="photo-frame">
       <div class="fallback" id="fallback">
         <div class="flower">🌸</div>
-        <p>Add your photos to see them here</p>
+        <p>Loading your memory...</p>
       </div>
       <img id="daily-photo" alt="A special memory" />
     </div>
@@ -185,19 +185,30 @@
   <footer>with love ✦</footer>
 
   <script>
-   // ============================================================
-    //  ✏️  YOUR MEMORY DATA
-    //  Each block { } contains one photo, one message, and the name(s)
+    // ============================================================
+    //  ✏️  YOUR MEMORIES — add as many blocks as you want!
+    //  Each { } block = one photo + one message + who it's from
+    //  RULES:
+    //    - photo link must start with https://i.imgur.com/
+    //    - everything must be inside "quotes"
+    //    - each block must end with a comma  ,
     // ============================================================
     const memories = [
       {
-        photo: "https://unsplash.com",
-        message: "I don't remeber this day, but it looks like I'm having fun",
+        photo: "https://i.imgur.com/fGfJe5I.jpeg",
+        message: "I don't remember this day, but it looks like I'm having fun",
         from: "Daniel"
-      }
+      },
+      // ---- Copy and paste a block like this to add more: -------
+      // {
+      //   photo: "https://i.imgur.com/YOUR_LINK.jpeg",
+      //   message: "Your personal message here",
+      //   from: "Your Name"
+      // },
     ];
 
-    // ---- Logic: pick memory based on day of year ----------------
+    // ---- Logic (no need to edit below this line) ---------------
+
     function getDayOfYear() {
       const now = new Date();
       const start = new Date(now.getFullYear(), 0, 0);
@@ -217,13 +228,12 @@
       });
     }
 
-    // Select today's memory
     const today = new Date();
     const index = getDayOfYear() % memories.length;
     const currentMemory = memories[index];
 
-    // Set the specific Message and Name for this photo
-    document.getElementById('daily-message').innerHTML = 
+    // Set message and name
+    document.getElementById('daily-message').innerHTML =
       currentMemory.message + ` &mdash; <em>${currentMemory.from}</em>`;
 
     // Hide the memory counter label
@@ -233,15 +243,19 @@
     document.getElementById('timestamp').textContent =
       formatDate(today) + " · " + formatTime(today);
 
-    // Load the specific Photo
+    // Load the photo
     const img = document.getElementById('daily-photo');
     img.src = currentMemory.photo;
     img.onload = function () {
       this.classList.add('loaded');
       document.getElementById('fallback').style.display = 'none';
     };
+    img.onerror = function () {
+      document.getElementById('fallback').querySelector('p').textContent =
+        'Photo could not load — check your Imgur link';
+    };
 
-    // ---- Falling petals logic ----------------------------------
+    // ---- Falling petals ----------------------------------------
     const petals = ["🌸", "🌺", "🌷", "✿"];
     for (let i = 0; i < 15; i++) {
       const el = document.createElement('div');
@@ -252,3 +266,8 @@
       el.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(el);
     }
+
+  </script>
+
+</body>
+</html>
