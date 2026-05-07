@@ -239,10 +239,6 @@
     // Hide the memory counter label
     document.getElementById('day-label').style.display = 'none';
 
-    // Set the live timestamp
-    document.getElementById('timestamp').textContent =
-      formatDate(today) + " · " + formatTime(today);
-
     // Load the photo
     const img = document.getElementById('daily-photo');
     img.src = currentMemory.photo;
