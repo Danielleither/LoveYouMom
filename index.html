@@ -162,7 +162,7 @@
 <body>
 
   <header>
-    <p class="eyebrow">A little something for</p>
+    <p class="eyebrow">Just wanted to say</p>
     <h1>We love you<br><em>Mom</em></h1>
   </header>
 
@@ -186,17 +186,14 @@
 
   <script>
     // ============================================================
-    //  ✏️  YOUR PHOTOS — add your image filenames here
-    //  Put your image files in the same folder as this HTML file
-    //  on GitHub, then list them below like: "photo1.jpg"
+    //  ✏️  YOUR PHOTOS — Direct links only
     // ============================================================
     const photos = [
       "https://i.imgur.com/fGfJe5I.jpeg",
     ];
 
     // ============================================================
-    //  ✏️  YOUR MESSAGES — one message per photo (same order)
-    //  You can use <em>italics</em> for emphasis
+    //  ✏️  YOUR MESSAGES — Rotates daily
     // ============================================================
     const messages = [
       "Every time I see this photo, I remember how lucky I am to have you. Thank you for everything, Mom.",
@@ -212,9 +209,9 @@
     ];
 
     // ============================================================
-    //  ✏️  YOUR NAME — change this to your name
+    //  ✏️  YOUR NAME — Change this to your name(s)
     // ============================================================
-    const yourName = "Your Name";
+    const yourName = "Alex & Sarah"; 
 
     // ---- Logic: pick photo based on day of year ----------------
     function getDayOfYear() {
@@ -239,14 +236,13 @@
     const today = new Date();
     const index = getDayOfYear() % photos.length;
 
-    // Set message
+    // Set message and customizable name
     document.getElementById('daily-message').innerHTML =
-      (messages[index] || "Thinking of you today, Mom. With all my love.") +
+      (messages[index % messages.length] || "Thinking of you today, Mom. With all my love.") +
       ` &mdash; <em>${yourName}</em>`;
 
-    // Set day label
-    document.getElementById('day-label').textContent =
-      "Memory #" + (index + 1) + " of " + photos.length;
+    // Remove the Memory Label
+    document.getElementById('day-label').style.display = 'none';
 
     // Set timestamp
     document.getElementById('timestamp').textContent =
@@ -259,23 +255,15 @@
       this.classList.add('loaded');
       document.getElementById('fallback').style.display = 'none';
     };
-    img.onerror = function () {
-      // Photo not found — fallback stays visible
-    };
 
-    // ---- Falling petals ----------------------------------------
+    // ---- Falling petals logic ----------------------------------
     const petals = ["🌸", "🌺", "🌷", "✿"];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 15; i++) {
       const el = document.createElement('div');
       el.className = 'petal';
       el.textContent = petals[i % petals.length];
-      el.style.left = (Math.random() * 100) + 'vw';
-      el.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
-      el.style.animationDuration = (8 + Math.random() * 10) + 's';
-      el.style.animationDelay = (Math.random() * 12) + 's';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      el.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(el);
     }
-  </script>
-
-</body>
-</html>
