@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Mom 💐</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background-color: #fdf6f0;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 192, 180, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 210, 195, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(253, 240, 230, 0.3) 0%, transparent 60%);
+      font-family: 'Lato', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.2rem 3rem;
+    }
+
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-60px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header .eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      font-size: 0.7rem;
+      color: #c0826a;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 8vw, 3.8rem);
+      font-weight: 400;
+      color: #5a2d20;
+      line-height: 1.1;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: #b55c40;
+    }
+
+    .card {
+      background: rgba(255, 252, 248, 0.85);
+      border: 1px solid rgba(210, 160, 140, 0.3);
+      border-radius: 18px;
+      max-width: 440px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(180, 100, 70, 0.08);
+    }
+
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      position: relative;
+      background: #f0ddd5;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .photo-frame img.loaded { opacity: 1; }
+
+    .photo-frame .fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: #b57a68;
+    }
+
+    .photo-frame .fallback .flower { font-size: 2.5rem; }
+    .photo-frame .fallback p { font-size: 0.8rem; font-family: 'Lato', sans-serif; opacity: 0.7; }
+
+    .card-body {
+      padding: 1.6rem 1.8rem 2rem;
+    }
+
+    .day-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #c0826a;
+      margin-bottom: 0.8rem;
+    }
+
+    .message {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 3.5vw, 1.35rem);
+      color: #4a2318;
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+    }
+
+    .message em { font-style: italic; color: #8b3d28; }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #d4a090, transparent);
+      margin: 0 auto 1.4rem;
+    }
+
+    .timestamp {
+      text-align: center;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: #b08070;
+    }
+
+    footer {
+      margin-top: 1.8rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: #c08070;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="eyebrow">A little something for</p>
+    <h1>Happy Mother's<br><em>Day</em></h1>
+  </header>
+
+  <div class="card">
+    <div class="photo-frame">
+      <div class="fallback" id="fallback">
+        <div class="flower">🌸</div>
+        <p>Add your photos to see them here</p>
+      </div>
+      <img id="daily-photo" alt="A special memory" />
+    </div>
+    <div class="card-body">
+      <p class="day-label" id="day-label">Today's memory</p>
+      <p class="message" id="daily-message">Loading your message...</p>
+      <div class="divider"></div>
+      <p class="timestamp" id="timestamp"></p>
+    </div>
+  </div>
+
+  <footer>with love ✦</footer>
+
+  <script>
+    // ============================================================
+    //  ✏️  YOUR PHOTOS — add your image filenames here
+    //  Put your image files in the same folder as this HTML file
+    //  on GitHub, then list them below like: "photo1.jpg"
+    // ============================================================
+    const photos = [
+      "photo1.jpg",
+      "photo2.jpg",
+      "photo3.jpg",
+      "photo4.jpg",
+      "photo5.jpg",
+      "photo6.jpg",
+      "photo7.jpg",
+      "photo8.jpg",
+      "photo9.jpg",
+      "photo10.jpg",
+    ];
+
+    // ============================================================
+    //  ✏️  YOUR MESSAGES — one message per photo (same order)
+    //  You can use <em>italics</em> for emphasis
+    // ============================================================
+    const messages = [
+      "Every time I see this photo, I remember how lucky I am to have you. Thank you for everything, Mom.",
+      "This memory means the world to me. I love you more than words can say.",
+      "You've always been my greatest supporter. I hope you know how much that means.",
+      "Thank you for all the little moments that became the best memories.",
+      "No matter where life takes me, home will always be wherever you are.",
+      "You gave me the best childhood. I carry those memories with me every day.",
+      "I learned what kindness looks like by watching you. Thank you, Mom.",
+      "This photo makes me smile every single time. Just like you always do.",
+      "Some people are just irreplaceable — you are one of them.",
+      "I love you to the moon and back, and then some. Happy Mother's Day!",
+    ];
+
+    // ============================================================
+    //  ✏️  YOUR NAME — change this to your name
+    // ============================================================
+    const yourName = "Your Name";
+
+    // ---- Logic: pick photo based on day of year ----------------
+    function getDayOfYear() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function formatDate(date) {
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString('en-US', {
+        hour: 'numeric', minute: '2-digit', hour12: true
+      });
+    }
+
+    const today = new Date();
+    const index = getDayOfYear() % photos.length;
+
+    // Set message
+    document.getElementById('daily-message').innerHTML =
+      (messages[index] || "Thinking of you today, Mom. With all my love.") +
+      ` &mdash; <em>${yourName}</em>`;
+
+    // Set day label
+    document.getElementById('day-label').textContent =
+      "Memory #" + (index + 1) + " of " + photos.length;
+
+    // Set timestamp
+    document.getElementById('timestamp').textContent =
+      formatDate(today) + " · " + formatTime(today);
+
+    // Load photo
+    const img = document.getElementById('daily-photo');
+    img.src = photos[index];
+    img.onload = function () {
+      this.classList.add('loaded');
+      document.getElementById('fallback').style.display = 'none';
+    };
+    img.onerror = function () {
+      // Photo not found — fallback stays visible
+    };
+
+    // ---- Falling petals ----------------------------------------
+    const petals = ["🌸", "🌺", "🌷", "✿"];
+    for (let i = 0; i < 10; i++) {
+      const el = document.createElement('div');
+      el.className = 'petal';
+      el.textContent = petals[i % petals.length];
+      el.style.left = (Math.random() * 100) + 'vw';
+      el.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+      el.style.animationDuration = (8 + Math.random() * 10) + 's';
+      el.style.animationDelay = (Math.random() * 12) + 's';
+      document.body.appendChild(el);
+    }
+  </script>
+
+</body>
+</html>
