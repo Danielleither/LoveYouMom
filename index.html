@@ -23,21 +23,6 @@
       padding: 2rem 1.2rem 3rem;
     }
 
-    .petal {
-      position: fixed;
-      pointer-events: none;
-      font-size: 1.2rem;
-      opacity: 0;
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      0%   { transform: translateY(-60px) rotate(0deg); opacity: 0; }
-      10%  { opacity: 0.7; }
-      90%  { opacity: 0.5; }
-      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-    }
-
     header {
       text-align: center;
       margin-bottom: 2rem;
@@ -48,7 +33,7 @@
       font-weight: 300;
       letter-spacing: 0.25em;
       font-size: 0.7rem;
-      color: #c0826a;
+      color: #8a4a30;
       text-transform: uppercase;
       margin-bottom: 0.5rem;
     }
@@ -57,13 +42,13 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.4rem, 8vw, 3.8rem);
       font-weight: 400;
-      color: #5a2d20;
+      color: #3a1a0e;
       line-height: 1.1;
     }
 
     header h1 em {
       font-style: italic;
-      color: #b55c40;
+      color: #8b3a20;
     }
 
     .card {
@@ -148,15 +133,6 @@
       letter-spacing: 0.12em;
       color: #b08070;
     }
-
-    footer {
-      margin-top: 1.8rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: #c08070;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
@@ -182,8 +158,6 @@
     </div>
   </div>
 
-  <footer>with love ✦</footer>
-
   <script>
     // ============================================================
     //  ✏️  YOUR MEMORIES — add as many blocks as you want!
@@ -194,7 +168,7 @@
     //    - each block must end with a comma  ,
     // ============================================================
     const memories = [
-       {
+      {
         photo: "https://i.imgur.com/yv3uBt6.jpeg",
         message: "I love you as much as I love potatoes",
         from: "Daniel"
@@ -254,6 +228,7 @@
     // Hide the memory counter label
     document.getElementById('day-label').style.display = 'none';
 
+
     // Load the photo
     const img = document.getElementById('daily-photo');
     img.src = currentMemory.photo;
@@ -265,18 +240,6 @@
       document.getElementById('fallback').querySelector('p').textContent =
         'Photo could not load — check your Imgur link';
     };
-
-    // ---- Falling petals ----------------------------------------
-    const petals = ["🌸", "🌺", "🌷", "✿"];
-    for (let i = 0; i < 15; i++) {
-      const el = document.createElement('div');
-      el.className = 'petal';
-      el.textContent = petals[i % petals.length];
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.animationDuration = (Math.random() * 3 + 3) + 's';
-      el.style.animationDelay = Math.random() * 5 + 's';
-      document.body.appendChild(el);
-    }
 
   </script>
 
