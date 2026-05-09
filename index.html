@@ -51,12 +51,40 @@
       color: #8b3a20;
     }
 
+    .album-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .arrow-btn {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(210, 160, 140, 0.5);
+      background: rgba(255, 252, 248, 0.85);
+      color: #8b3a20;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px rgba(180, 100, 70, 0.1);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .arrow-btn:hover { background: #f5e6df; }
+    .arrow-btn:active { transform: scale(0.93); }
+
     .card {
       background: rgba(255, 252, 248, 0.85);
       border: 1px solid rgba(210, 160, 140, 0.3);
       border-radius: 18px;
-      max-width: 440px;
-      width: 100%;
+      flex: 1;
       overflow: hidden;
       box-shadow: 0 8px 40px rgba(180, 100, 70, 0.08);
     }
@@ -75,7 +103,9 @@
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.5s ease;
+      position: absolute;
+      top: 0; left: 0;
     }
 
     .photo-frame img.loaded { opacity: 1; }
@@ -98,7 +128,7 @@
       padding: 1.6rem 1.8rem 2rem;
     }
 
-    .day-label {
+    .counter {
       font-family: 'Lato', sans-serif;
       font-weight: 300;
       font-size: 0.68rem;
@@ -113,26 +143,31 @@
       font-size: clamp(1.15rem, 3.5vw, 1.35rem);
       color: #4a2318;
       line-height: 1.65;
-      margin-bottom: 1.4rem;
+      min-height: 3.5rem;
+      transition: opacity 0.3s ease;
     }
 
     .message em { font-style: italic; color: #8b3d28; }
 
-    .divider {
-      width: 40px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, #d4a090, transparent);
-      margin: 0 auto 1.4rem;
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+      max-width: 200px;
     }
 
-    .timestamp {
-      text-align: center;
-      font-family: 'Lato', sans-serif;
-      font-weight: 300;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      color: #b08070;
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d4a090;
+      opacity: 0.35;
+      transition: opacity 0.3s;
     }
+
+    .dot.active { opacity: 1; }
   </style>
 </head>
 <body>
@@ -142,30 +177,31 @@
     <h1>We love you<br><em>Mom</em></h1>
   </header>
 
-  <div class="card">
-    <div class="photo-frame">
-      <div class="fallback" id="fallback">
-        <div class="flower">🌸</div>
-        <p>Loading your memory...</p>
+  <div class="album-wrapper">
+    <button class="arrow-btn" id="prev-btn" aria-label="Previous">&#8592;</button>
+
+    <div class="card">
+      <div class="photo-frame">
+        <div class="fallback" id="fallback">
+          <div class="flower">🌸</div>
+          <p>Loading your memory...</p>
+        </div>
+        <img id="daily-photo" alt="A special memory" />
       </div>
-      <img id="daily-photo" alt="A special memory" />
+      <div class="card-body">
+        <p class="counter" id="counter"></p>
+        <p class="message" id="daily-message"></p>
+      </div>
     </div>
-    <div class="card-body">
-      <p class="day-label" id="day-label">Today's memory</p>
-      <p class="message" id="daily-message">Loading your message...</p>
-      <div class="divider"></div>
-      <p class="timestamp" id="timestamp"></p>
-    </div>
+
+    <button class="arrow-btn" id="next-btn" aria-label="Next">&#8594;</button>
   </div>
+
+  <div class="dots" id="dots"></div>
 
   <script>
     // ============================================================
-    //  ✏️  YOUR MEMORIES — add as many blocks as you want!
-    //  Each { } block = one photo + one message + who it's from
-    //  RULES:
-    //    - photo link must start with https://i.imgur.com/
-    //    - everything must be inside "quotes"
-    //    - each block must end with a comma  ,
+    //  ✏️  YOUR MEMORIES
     // ============================================================
     const memories = [
       {
@@ -188,83 +224,83 @@
         message: "Raising me was probably a full time job. Thanks for not giving up!",
         from: "Daniel"
       },
-        {
-        photo: "https://i.imgur.com/F24YCx0.jpeg", //jennie with mom
+      {
+        photo: "https://i.imgur.com/F24YCx0.jpeg", // jennie with mom
         message: "m",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/7BtKVMg.jpeg", // olive garden
-        message: "You’re the best mom.",
+        message: "You're the best mom.",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/wor1aQx.jpeg", // cabin all
         message: "You make the world a better place by being in it",
         from: "John"
       },
-       {
-        photo: "https://i.imgur.com/Gyc67Nf.jpeg", //jennie cat
+      {
+        photo: "https://i.imgur.com/Gyc67Nf.jpeg", // jennie cat
         message: "m",
         from: "Daniel"
       },
-       {
-        photo: "https://i.imgur.com/ETwkbws.jpeg", //jennie hannah car
-        message: "Thanks for all the FaceTime calls \"does this look good?"\", //Thanks for being our personal chaufere
+      {
+        photo: "https://i.imgur.com/ETwkbws.jpeg", // jennie hannah car
+        message: "Thanks for all the FaceTime calls \"does this look good?\"",
         from: "Hannah"
       },
-       {
-        photo: "https://i.imgur.com/CIEFeoy.jpeg", //Hannah Jennie kitchen
+      {
+        photo: "https://i.imgur.com/CIEFeoy.jpeg", // Hannah Jennie kitchen
         message: "Thanks for teaching me how to cook",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/K9PQbqC.jpeg", // Hannah kya
         message: "*kissy lips*",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/WP7p08D.jpeg", // Hannah John Living room
-        message: "I'm thankful for the life lessons you've taugt me.",
+        message: "I'm thankful for the life lessons you've taught me.",
         from: "John"
       },
-       {
+      {
         photo: "https://i.imgur.com/dpvAJJe.jpeg", // Daniel hannah living room
         message: "Every day, I aspire to make you proud",
         from: "Daniel"
       },
-       {
-        photo: "https://i.imgur.com/eIjlDBu.jpeg", // Hanah jennie car mustache
+      {
+        photo: "https://i.imgur.com/eIjlDBu.jpeg", // Hannah jennie car mustache
         message: "You bring laughter to my life",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/3FVwjJD.jpeg", // Hannah jennie 4 wheeler
         message: "Thanks for teaching me the country kid ways",
         from: "Hannah"
       },
-       {
-        photo: "https://i.imgur.com/BlHkND9.jpeg", //hannah jennie dog grandmas
+      {
+        photo: "https://i.imgur.com/BlHkND9.jpeg", // hannah jennie dog grandmas
         message: "m",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/DnsoALv.jpeg", // Hannah Jennie washing
         message: "I now know how to do my laundry by hand",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/qPUgmsX.jpeg", // hannah john daniel car
-        message: "Thank you for answering all the questions my curios brain asks",
+        message: "Thank you for answering all the questions my curious brain asks",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/L8u8B7c.jpeg", // all snowing new
         message: "Thank you for always being here for us our entire lives",
         from: "your kids"
       },
-       {
-        photo: "https://i.imgur.com/PyfG7yr.jpeg", //John Jennie Daniel Basketball
+      {
+        photo: "https://i.imgur.com/PyfG7yr.jpeg", // John Jennie Daniel Basketball
         message: "Thanks for feeding me a lot of food so I can grow tall",
         from: "John"
       },
@@ -274,13 +310,13 @@
         from: "your kids"
       },
       {
-        photo: "https://i.imgur.com/yV1fWwM.jpeg", //hannah john bathroom
+        photo: "https://i.imgur.com/yV1fWwM.jpeg", // hannah john bathroom
         message: "Thanks for finding humor in the randomest things. You make my life happier.",
         from: "John"
       },
       {
-        photo: "https://i.imgur.com/eDtkJh2.jpeg", //hannah grad all
-        message: "Thanks for supporting me even when I didnt want to do my english homework",
+        photo: "https://i.imgur.com/eDtkJh2.jpeg", // hannah grad all
+        message: "Thanks for supporting me even when I didn't want to do my english homework",
         from: "Hannah"
       },
       {
@@ -289,7 +325,7 @@
         from: "Daniel"
       },
       {
-        photo: "https://i.imgur.com/aX6TLhU.jpeg", //All cave?
+        photo: "https://i.imgur.com/aX6TLhU.jpeg", // All cave?
         message: "Thank you for taking us on so many adventures",
         from: "Your kids"
       },
@@ -304,87 +340,122 @@
         from: "John"
       },
       {
-        photo: "https://i.imgur.com/z7BwV86.jpeg", //Hannah Mom Halloween party
+        photo: "https://i.imgur.com/z7BwV86.jpeg", // Hannah Mom Halloween party
         message: "You raised 4 minions that's why your hair looks like that",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/Cmarm1E.jpeg", // all pumpkin carving
         message: "No matter how old I get your comfort still feels like home",
         from: "Hannah"
       },
-       {
+      {
         photo: "https://i.imgur.com/LNlyFer.jpeg", // all theatre
         message: "Your strength and love inspires me every day",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/anHCeRU.jpeg", // John Daniel turtle
         message: "Thanks for giving me an awesome brother to explore the world with.",
         from: "John"
       },
-       {
+      {
         photo: "https://i.imgur.com/mStkrmA.jpeg", // Daniel Hannah bus
-        message: "Thank you for all the sacrifices you’ve made for me",
+        message: "Thank you for all the sacrifices you've made for me",
         from: "Daniel"
       },
-       {
+      {
         photo: "https://i.imgur.com/xpiSE7b.jpeg", // Daniel car with mr cuddles
-        message: "You’ve always been my biggest supporter. Even when I have weird hobbies.",
+        message: "You've always been my biggest supporter. Even when I have weird hobbies.",
         from: "Daniel"
       },
-      // ---- Copy and paste a block like this to add more: -------
-      // {
-      //   photo: "https://i.imgur.com/YOUR_LINK.jpeg",
-      //   message: "Your personal message here",
-      //   from: "Your Name"
-      // },
     ];
 
-    // ---- Logic (no need to edit below this line) ---------------
-
-    function getDayOfYear() {
-      const now = new Date();
-      const start = new Date(now.getFullYear(), 0, 0);
-      const diff = now - start;
-      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    // ---- Shuffle randomly --------------------------------------
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
 
-    function formatDate(date) {
-      return date.toLocaleDateString('en-US', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    const shuffled = shuffle(memories);
+    let current = 0;
+
+    // ---- Build dots --------------------------------------------
+    const dotsEl = document.getElementById('dots');
+    shuffled.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      dotsEl.appendChild(d);
+    });
+
+    function updateDots() {
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
       });
     }
 
-    function formatTime(date) {
-      return date.toLocaleTimeString('en-US', {
-        hour: 'numeric', minute: '2-digit', hour12: true
-      });
+    // ---- Show a memory -----------------------------------------
+    function showMemory(index) {
+      const m = shuffled[index];
+      const img = document.getElementById('daily-photo');
+      const msgEl = document.getElementById('daily-message');
+      const fallback = document.getElementById('fallback');
+
+      msgEl.style.opacity = '0';
+
+      img.classList.remove('loaded');
+      img.src = '';
+      fallback.style.display = 'flex';
+      fallback.querySelector('p').textContent = 'Loading your memory...';
+
+      img.src = m.photo;
+      img.onload = function () {
+        this.classList.add('loaded');
+        fallback.style.display = 'none';
+      };
+      img.onerror = function () {
+        fallback.querySelector('p').textContent = 'Photo could not load — check your Imgur link';
+      };
+
+      setTimeout(() => {
+        msgEl.innerHTML = m.message + ` &mdash; <em>${m.from}</em>`;
+        msgEl.style.opacity = '1';
+      }, 150);
+
+      updateDots();
     }
 
-    const today = new Date();
-    const index = getDayOfYear() % memories.length;
-    const currentMemory = memories[index];
+    // ---- Arrows ------------------------------------------------
+    document.getElementById('prev-btn').addEventListener('click', () => {
+      current = (current - 1 + shuffled.length) % shuffled.length;
+      showMemory(current);
+    });
 
-    // Set message and name
-    document.getElementById('daily-message').innerHTML =
-      currentMemory.message + ` &mdash; <em>${currentMemory.from}</em>`;
+    document.getElementById('next-btn').addEventListener('click', () => {
+      current = (current + 1) % shuffled.length;
+      showMemory(current);
+    });
 
-    // Hide the memory counter label
-    document.getElementById('day-label').style.display = 'none';
+    // ---- Swipe support -----------------------------------------
+    let touchStartX = 0;
+    const card = document.querySelector('.card');
+    card.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    card.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        current = diff > 0
+          ? (current + 1) % shuffled.length
+          : (current - 1 + shuffled.length) % shuffled.length;
+        showMemory(current);
+      }
+    });
 
-
-    // Load the photo
-    const img = document.getElementById('daily-photo');
-    img.src = currentMemory.photo;
-    img.onload = function () {
-      this.classList.add('loaded');
-      document.getElementById('fallback').style.display = 'none';
-    };
-    img.onerror = function () {
-      document.getElementById('fallback').querySelector('p').textContent =
-        'Photo could not load — check your Imgur link';
-    };
+    // ---- Initial load ------------------------------------------
+    showMemory(0);
 
   </script>
 
